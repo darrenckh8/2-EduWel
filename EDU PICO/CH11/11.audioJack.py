@@ -1,78 +1,113 @@
-import time # Allows us to use time.sleep() to pause the program.                                  #type: ignore
-import board # Helps us refer to the correct pins on the board.                                    #type: ignore
-import busio # Allows us to interact with the I2C bus.                                             #type: ignore
-import digitalio # Allows us to interact with the digital pins on the board.                       #type: ignore
-import audiomp3 # Allows us to decode and play MP3 files.                                          #type: ignore
-import audiopwmio # Allows us to interact with the audio output pins on the board.                 #type: ignore
-from adafruit_apds9960.apds9960 import APDS9960 # Allows us to interact with the APDS9960 sensor.  #type: ignore
+import time
+import os
+import board
+import digitalio
+import audiomp3
+import audiopwmio
 
-i2c = busio.I2C(board.GP5, board.GP4) # Create a variable called i2c that represents the I2C bus connected to pins 5 and 4.
-multi_sensor = APDS9960(i2c) # Create a variable called multi_sensor that represents the APDS9960 sensor connected to the I2C bus.
-multi_sensor.enable_proximity = True # Enable proximity detection on the APDS9960 sensor.
-multi_sensor.enable_gesture = True # Enable gesture detection on the APDS9960 sensor.
+# Setup buttons
+buttonA = digitalio.DigitalInOut(board.GP0)
+buttonA.direction = digitalio.Direction.INPUT
+buttonA.pull = digitalio.Pull.UP
 
-buttonA = digitalio.DigitalInOut(board.GP0) # Create a variable called buttonA that represents pin 0 on the board.
-buttonA.direction = digitalio.Direction.INPUT # Set the direction of buttonA to input.
-buttonA.pull = digitalio.Pull.UP # Enable the pull-up resistor for buttonA.
+buttonB = digitalio.DigitalInOut(board.GP1)
+buttonB.direction = digitalio.Direction.INPUT
+buttonB.pull = digitalio.Pull.UP
 
-buttonB = digitalio.DigitalInOut(board.GP1) # Create a variable called buttonB that represents pin 1 on the board.
-buttonB.direction = digitalio.Direction.INPUT # Set the direction of buttonB to input.
-buttonB.pull = digitalio.Pull.UP # Enable the pull-up resistor for buttonB.
-
-# Create a variable called dac that represents the PWM audio output connected to pins 20 and 21.
+# Setup audio output
 dac = audiopwmio.PWMAudioOut(left_channel=board.GP20, right_channel=board.GP21)
 
-# List of MP3 Files
-song_array = ["music_1.mp3", "music_2.mp3", "music_3.mp3", "music_4.mp3"]
+# Detect MP3 files in /music
+song_array = [file for file in os.listdir("/music") if file.endswith(".mp3")]
+song_array.sort()
 
-# Function to Load MP3 Files
+# Load MP3 file
 def load_mp3(file_name):
     return audiomp3.MP3Decoder(open("/music/" + file_name, "rb"))
 
-# Initialize Music Playlist
-mp3Array = [load_mp3(song) for song in song_array]
-counter = 0
-start_song = False
+# Handle no files
+if not song_array:
+    print("No MP3 files found in /music folder.")
+    while True:
+        pass
 
-print("Press Button A to Start Music")
-print("Press Button B for Controls Menu")
+# State variables
+counter = 0
+playing = False
+paused = False
+button_hold_threshold = 0.5  # Seconds
+
+print("Press Button A to Play/Pause")
+print("Press Button B to Skip/Go Back")
+
+# Button press detection
+def check_button(button):
+    """Returns 'short', 'long', or None depending on how long the button is pressed."""
+    if not button.value:
+        time.sleep(0.01)  # Debounce
+        start_time = time.monotonic()
+        while not button.value:
+            time.sleep(0.01)
+        duration = time.monotonic() - start_time
+        return "long" if duration >= button_hold_threshold else "short"
+    return None
 
 while True:
-    gesture = multi_sensor.gesture() # Get Gesture Data
+    actionA = check_button(buttonA)
+    actionB = check_button(buttonB)
 
-    if not buttonA.value:  # Button A Pressed
-        start_song = True
-        print(f"Playing: {song_array[counter]}")
-        dac.play(mp3Array[counter])
-
-    if not buttonB.value:  # Button B Pressed
-        print("\n=== Controls Menu ===")
-        print("Slide Down  : Pause")
-        print("Slide Up    : Play")
-        print("Slide Right : Next Track")
-        print("Slide Left  : Previous Track")
-
-    if start_song:
-        if gesture == 1:  # Slide Up → Resume
-            print("Resuming...")
-            dac.resume()
-
-        elif gesture == 2:  # Slide Down → Pause
+    # Button A: Play/Pause or Start
+    if actionA == "short":
+        if not playing:
+            print(f"Playing: {song_array[counter]}")
+            dac.play(load_mp3(song_array[counter]), loop=False)
+            playing = True
+            paused = False
+        elif playing and not paused and actionA == "short":
             print("Paused.")
             dac.pause()
+            paused = True
+        elif playing and paused and actionA == "short":
+            print("Resuming...")
+            dac.resume()
+            paused = False
+        time.sleep(0.2)
+        
+    if actionA == "long":
+        counter = 0
+        playing = False
+        paused = False
+        print("Playback Stopped")
+        dac.stop()
+        time.sleep(0.2)
 
-        elif gesture == 3:  # Slide Left → Previous Track
-            counter = (counter - 1) % len(mp3Array)
-            print(f"Previous Track: {song_array[counter]}")
-            dac.play(mp3Array[counter])
+    # Button B: Next/Previous track
+    if actionB == "short":
+        counter = (counter + 1) % len(song_array)
+        print(f"Next Track: {song_array[counter]}")
+        dac.play(load_mp3(song_array[counter]), loop=False)
+        playing = True
+        paused = False
+        if counter == 0:
+            print("Wrapped to first track.")
+        time.sleep(0.2)
 
-        elif gesture == 4:  # Slide Right → Next Track
-            counter = (counter + 1) % len(mp3Array)
-            print(f"Next Track: {song_array[counter]}")
-            dac.play(mp3Array[counter])
+    elif actionB == "long":
+        counter = (counter - 1) % len(song_array)
+        print(f"Previous Track: {song_array[counter]}")
+        dac.play(load_mp3(song_array[counter]), loop=False)
+        playing = True
+        paused = False
+        if counter == len(song_array) - 1:
+            print("Wrapped to last track.")
+        time.sleep(0.2)
 
-        # Auto-play next song when the current one ends
-        if not dac.playing:
-            counter = (counter + 1) % len(mp3Array)
-            print(f"Auto-playing next track: {song_array[counter]}")
-            dac.play(mp3Array[counter])
+    # Auto play next track when finished
+    if playing and not dac.playing and not paused:
+        print("Playback finished.")
+        counter = (counter + 1) % len(song_array)
+        print(f"Auto-playing: {song_array[counter]}")
+        dac.play(load_mp3(song_array[counter]), loop=False)
+        playing = True
+        time.sleep(0.2)
+

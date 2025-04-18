@@ -32,6 +32,6 @@ while True: # Create an infinite loop that will run forever.
         simpleio.tone(buzzer,440,1) # Play a tone of 440 Hz for 1 second.
         time.sleep(0.3) # Pause the program for 0.3 seconds.
     if not button_B.value: # Check if button_B is pressed.
-        print("open the door to great guests") # Print a message to the console.
+        print("open the door to greet guests") # Print a message to the console.
         simpleio.tone(buzzer,0,2) # Stop playing the tone for 2 seconds.
         time.sleep(0.3) # Pause the program for 0.3 seconds.
