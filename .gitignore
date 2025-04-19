@@ -1,5 +1,7 @@
+/.gitignore
 /.vscode
 /Python
 /FP
 /.DS_Store
 /Element
+/EDU PICO/temp.py
