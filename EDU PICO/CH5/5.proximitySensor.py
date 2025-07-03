@@ -1,5 +1,4 @@
 import board
-import time
 import busio
 import neopixel
 from adafruit_apds9960.apds9960 import APDS9960

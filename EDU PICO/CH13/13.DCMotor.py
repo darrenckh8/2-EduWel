@@ -1,5 +1,4 @@
 import board
-import time
 import digitalio
 from pwmio import PWMOut
 from adafruit_motor import motor
