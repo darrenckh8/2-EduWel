@@ -1,3 +1,5 @@
+# USE SIM AT WOKWI.COM 
+
 from machine import Pin
 from time import sleep
 
