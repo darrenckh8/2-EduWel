@@ -14,8 +14,8 @@ The `EDU PICO` directory contains a complete 20-chapter curriculum covering the 
 - **CH4**: Color Sensors and Vision Systems
 - **CH5**: Proximity Sensors and Distance Measurement
 - **CH6**: Gesture Recognition Systems
-- **CH7**: Environmental Sensing
-- **CH8**: Environmental Sensing
+- **CH7**: Environmental Sensing (Temperature)
+- **CH8**: Environmental Sensing (Humidity)
 - **CH9**: Audio Data Processing and Analysis
 - **CH10**: Buzzer Systems and Audio Feedback
 - **CH11**: Audio Jack Integration and Sound Processing
