@@ -1,5 +1,4 @@
-import board, digitalio, wifi, socketpool, time
-import digitalio
+import board
 import wifi
 import socketpool
 import time

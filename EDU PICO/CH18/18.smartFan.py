@@ -1,4 +1,9 @@
-import board, time, busio, adafruit_ssd1306, neopixel, digitalio
+import board
+import time
+import busio
+import adafruit_ssd1306
+import neopixel
+import digitalio
 from pwmio import PWMOut
 from adafruit_motor import motor
 from analogio import AnalogIn
