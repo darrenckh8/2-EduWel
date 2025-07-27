@@ -1,4 +1,7 @@
-*
+/*
 !/EDU PICO/
-!/EDU PICO/**
-!/README.md
+/EDU PICO/*
+!/EDU PICO/LV1/
+!/EDU PICO/LV2/
+!/EDU PICO/LV3/
+!/.gitignore
