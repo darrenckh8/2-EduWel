@@ -42,7 +42,7 @@ dc_motor.throttle = 0.0
 pot = AnalogIn(board.GP28)
 
 # ------------------ WiFi Setup ------------------
-WIFI_SSID, WIFI_PASSWORD = "mmchyy", "mm001971"
+WIFI_SSID, WIFI_PASSWORD = "", ""
 
 def connect_wifi():
     while True:

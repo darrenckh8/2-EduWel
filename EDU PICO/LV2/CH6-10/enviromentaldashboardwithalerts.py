@@ -22,9 +22,9 @@ wifi.radio.connect(SSID, PASSWORD)
 print("Connected! IP:", wifi.radio.ipv4_address)
 
 # ========= InfluxDB Cloud =========
-ORG = "c8c34fdffd2d0640"
-BUCKET = "test"
-TOKEN = "g2tY8bA38fJSagvllDLRDtlUwBYbEti8dnhJyovBRO4vD_oV14ju5o9_oO1AmrWv3Nbvtx2QhjZHIRk-ipMRMA=="
+ORG = ""
+BUCKET = ""
+TOKEN = ""
 URL = "https://us-east-1-1.aws.cloud2.influxdata.com/api/v2/write"
 
 WRITE_URL = f"{URL}?org={ORG}&bucket={BUCKET}&precision=s"
