@@ -31,7 +31,9 @@ The `EDU PICO` directory contains a complete 20-chapter curriculum covering the 
 - **CH21**: Gesture Password System (Bonus Project)
 
 #### **Level 2**
-Coming Soon!
+- **CH1-5**: Smart Home Control Panel
+- **CH6-10**: Environmental Dashboard with Alerts
+
 #### **Level 3**
 Coming Soon!
 
