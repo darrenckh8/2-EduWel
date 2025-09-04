@@ -1,4 +1,4 @@
-import board, time, busio, digitalio, neopixel, simpleio, math, array
+import board, time, busio, digitalio, simpleio, math, array
 import adafruit_ssd1306, adafruit_ahtx0
 from analogio import AnalogIn
 from adafruit_apds9960.apds9960 import APDS9960
@@ -8,7 +8,6 @@ import audiobusio
 i2c = busio.I2C(board.GP5, board.GP4)
 oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c)
 pot = AnalogIn(board.GP28)
-pixels = neopixel.NeoPixel(board.GP14, 1, brightness=0.2)
 buzzer_pin = board.GP21
 
 # Buttons
@@ -97,16 +96,6 @@ def dominant_color():
     r, g, b = data["r"], data["g"], data["b"]
     return max(("Red", r), ("Green", g), ("Blue", b), key=lambda x: x[1])[0]
 
-def update_led():
-    if apds and data["prox"] > 100:
-        pixels.fill((50, 0, 0))
-    elif aht and data["temp"] > 30:
-        pixels.fill((50, 25, 0))
-    elif data["pot_pct"] > 80:
-        pixels.fill((0, 0, 50))
-    else:
-        pixels.fill((0, 20, 0))
-
 # ───── Screens ─────
 def screen_env():
     oled.fill(0)
@@ -147,7 +136,6 @@ screen_funcs = [screen_env, screen_color, screen_controls]
 
 # ───── Main Loop ─────
 print("Multi-Sensor Dashboard Starting...")
-pixels.fill((0, 20, 0))
 buzz()
 
 while True:
@@ -162,5 +150,4 @@ while True:
         buzz(1200)
         print("Buzzer test")
     screen_funcs[screen_index]()
-    update_led()
     time.sleep(0.1)

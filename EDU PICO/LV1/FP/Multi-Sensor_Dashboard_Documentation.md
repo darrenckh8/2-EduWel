@@ -43,13 +43,6 @@ Students must implement intuitive navigation:
 - Provide different audio patterns for variety
 - Audio confirmation for user actions
 
-**Visual Status Indicators:**
-- NeoPixel LED changes color based on sensor readings:
-  - **Red:** Object very close (proximity > 100)
-  - **Orange:** High temperature (> 30°C)
-  - **Blue:** High potentiometer setting (> 80%)
-  - **Green:** Normal operation status
-
 ## 📋 Components List
 
 ### **Required Hardware:**
@@ -63,5 +56,4 @@ Students must implement intuitive navigation:
 | PDM Microphone | 1 | Chapter 9 | Sound level detection |
 | Potentiometer | 1 | Chapter 2 | Analog input control |
 | Push Buttons | 2 | Chapter 1 | User interface navigation |
-| NeoPixel RGB LED | 1 | Chapter 3 | Status indication |
 | Buzzer | 1 | Chapter 10 | Audio feedback |
