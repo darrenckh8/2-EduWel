@@ -1,5 +1,3 @@
-'''Smart Home Control Panel'''
-
 import time, json
 import board, busio, digitalio, neopixel
 import wifi, socketpool
@@ -9,7 +7,6 @@ from adafruit_motor import motor
 from analogio import AnalogIn
 from adafruit_httpserver import Server, Request, Response, POST
 
-# ------------------ Hardware Setup ------------------
 # Buttons
 def setup_button(pin):
     btn = digitalio.DigitalInOut(pin)
@@ -41,7 +38,6 @@ dc_motor.throttle = 0.0
 # Potentiometer
 pot = AnalogIn(board.GP28)
 
-# ------------------ WiFi Setup ------------------
 WIFI_SSID, WIFI_PASSWORD = "", ""
 
 def connect_wifi():
@@ -58,14 +54,12 @@ def connect_wifi():
 connect_wifi()
 pool = socketpool.SocketPool(wifi.radio)
 
-# ------------------ System State ------------------
 relay_on = motor_on = False
 motor_throttle = web_throttle = pot_throttle = 0.0
 throttle_source = "pot"  # "pot" or "web"
 menu_items, selected_index = ['Relay', 'DC Motor'], 0
 last_display_state = None
 
-# ------------------ Helpers ------------------
 def update_motor_pixel(throttle, active):
     if not active:
         pixels[1] = (0, 0, 0); return
@@ -101,7 +95,6 @@ def toggle_motor(source="button"):
     print(f"DC Motor toggled to: {'ON' if motor_on else 'OFF'} ({source})")
     update_oled()
 
-# ------------------ Web Server ------------------
 def get_html():
     return f"""<!DOCTYPE html>
 <html>
@@ -178,7 +171,6 @@ def buttonpress(request: Request):
 server.start(str(wifi.radio.ipv4_address), port=80)
 print(f"Server running at: http://{wifi.radio.ipv4_address}")
 
-# ------------------ Handlers ------------------
 def handle_buttons(now):
     global last_button_sel, last_sel_time, selected_index
     global last_button_toggle, last_toggle_time
@@ -221,7 +213,6 @@ def handle_oled():
     if state != last_display_state:
         update_oled(); last_display_state = state
 
-# ------------------ Main Loop ------------------
 try:
     while True:
         now = time.monotonic()

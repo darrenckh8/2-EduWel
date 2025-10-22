@@ -10,7 +10,7 @@ import adafruit_ssd1306
 # ───── Configuration ─────
 WIFI_SSID = ""
 WIFI_PASSWORD = ""
-WEATHER_API_KEY = ""
+WEATHER_API_KEY = "nHtxhQHDGb0fpezHLZnYOwHRhxtrqzzC"
 WEATHER_LOCATION = "kuala%20lumpur"
 
 # ───── Weather Code Descriptions ─────
